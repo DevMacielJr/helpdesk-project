@@ -1,8 +1,7 @@
 from rest_framework import viewsets
 from .models import Ticket
 from .serializers import TicketSerializer
-from django.http import JsonResponse 
-from django.db import models
+from django.http import JsonResponse
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all().order_by('-criado_em')

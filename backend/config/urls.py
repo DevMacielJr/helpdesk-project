@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 
 urlpatterns = [
+    # path('', home, name='home'),  # Ainda não criada
     path('admin/', admin.site.urls),
     path('api/', include('tickets.urls')),
 ]
+
+def home(request):
+    return HttpResponse("Página inicial do sistema Help Desk")
