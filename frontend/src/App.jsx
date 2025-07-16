@@ -63,16 +63,20 @@ function App() {
         setTitulo('');
         setDescricao('');
         buscarTickets();  // atualiza a lista
-
-        // Opcional: enviar notificação via WebSocket manualmente, 
-        // se quiser continuar usando o frontend para isso
-        // if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-        //   socketRef.current.send(JSON.stringify({ tipo: 'novo_ticket', titulo }));
-        // }
-
       })
       .catch(error => {
         console.error('Erro ao criar ticket:', error);
+      });
+  };
+
+  // Função para marcar chamado como visualizado
+  const marcarVisualizado = (id) => {
+    axios.post(`http://127.0.0.1:8000/api/tickets/${id}/marcar_visualizado/`)
+      .then(() => {
+        buscarTickets(); // atualizar lista
+      })
+      .catch((error) => {
+        console.error('Erro ao marcar como visualizado:', error);
       });
   };
 
@@ -102,10 +106,23 @@ function App() {
       <h2>Chamados abertos</h2>
       <ul>
         {tickets.map(ticket => (
-          <li key={ticket.id} style={{ marginBottom: '1rem' }}>
+          <li
+            key={ticket.id}
+            style={{
+              marginBottom: '1rem',
+              backgroundColor: ticket.visualizado ? '#e0e0e0' : '#fff',
+              padding: '10px',
+              borderRadius: '4px',
+            }}
+          >
             <strong>{ticket.titulo}</strong><br />
             {ticket.descricao}<br />
-            <em>{ticket.resolvido ? '✅ Resolvido' : '⏳ Pendente'}</em>
+            <em>{ticket.resolvido ? '✅ Resolvido' : '⏳ Pendente'}</em><br />
+            {!ticket.visualizado && (
+              <button onClick={() => marcarVisualizado(ticket.id)} style={{ marginTop: '5px' }}>
+                Marcar como visualizado
+              </button>
+            )}
           </li>
         ))}
       </ul>

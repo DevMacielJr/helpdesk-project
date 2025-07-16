@@ -3,7 +3,8 @@ from .models import Ticket
 from .serializers import TicketSerializer
 from django.http import JsonResponse
 
-import requests 
+import requests
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -24,6 +25,13 @@ class TicketViewSet(viewsets.ModelViewSet):
             })
         except requests.exceptions.RequestException as e:
             print(f"Erro ao notificar WebSocket: {e}")
-            
+
+    @action(detail=True, methods=['post'])
+    def marcar_visualizado(self, request, pk=None):
+        ticket = self.get_object()
+        ticket.visualizado = True
+        ticket.save()
+        return Response({'status': 'Chamado marcado como visualizado'}, status=status.HTTP_200_OK)
+
 def index(request):
     return JsonResponse({"mensagem": "Bem-vindo à API do HelpDesk"})
